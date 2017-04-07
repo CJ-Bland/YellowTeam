@@ -1,5 +1,8 @@
+package controllers;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import entity.Song;
 
 /**
  * The queue of song that will be played

@@ -1,4 +1,7 @@
+package controllers;
 import java.util.ArrayList;
+
+import entity.Song;
 
 /**
  * The controller of the song list

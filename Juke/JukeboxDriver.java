@@ -3,6 +3,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+import controllers.Jukebox;
+import controllers.PlaySong;
+import entity.Song;
+
 /**
  * Driver of the Jukebox
  * 

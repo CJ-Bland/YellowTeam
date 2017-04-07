@@ -1,3 +1,4 @@
+package entity;
 /**
  * A class which models an album
  * 
@@ -6,5 +7,5 @@
  * @version Sprint 3
  */
 public class Album {
-
+	
 }
