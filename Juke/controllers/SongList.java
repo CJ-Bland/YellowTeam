@@ -43,6 +43,8 @@ public class SongList {
      * @param name
      * @return the song if it is find
      */
+	//CJ: Unlikely, but what if two songs have the same name, but are by different artist?
+		//Maybe this should be a list too
     public Song getSongByName(String name){
     	Song song = null;
     	for(Song s: songList){
@@ -58,6 +60,7 @@ public class SongList {
      * @param artist
      * @return the song if it is find
      */
+    //CJ: Artists usually have multiple songs, shouldn't this return a list of songs? 
     public Song getSongByArtist(String artist){
         Song song = null;
     	for(Song s: songList){
@@ -73,6 +76,8 @@ public class SongList {
      * @param year
      * @return the song if it is find
      */
+  //CJ: Multiple songs might have been released in the same year, 
+    //shouldn't this return a list of songs? 
     public Song getSongByYear(String year){
     	Song song = null;
         for(Song s: songList){
@@ -93,7 +98,7 @@ public class SongList {
     		songList.remove(song);
     	}
     	else {
-    		System.out.println("Error ! Song not found");
+    		System.out.println("Error! Song not found");
     	}
     	
     }

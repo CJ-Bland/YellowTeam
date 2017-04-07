@@ -10,7 +10,7 @@ import entity.Song;
 /**
  * Driver of the Jukebox
  * 
- * @author Simon and Prem 
+ * @author Simon, Prem, CJ 
  */
 public class JukeboxDriver {
 
@@ -38,22 +38,32 @@ public class JukeboxDriver {
 		
 		while (!input) {
 			scan = scanner.nextLine();
-			if(scan.equals("admin") || scan.equals("user")) {
+			//Commented out by CJ during Sprint 3: sets admin to true if the user inputs user or admin,
+			//needs two different branches
+			/*if(scan.equals("admin") || scan.equals("user")) {
 				input = true;
 				jukebox.setAdmin(true);
-			} else
+			}*/
+			if(scan.equals("admin")){
+				input = true;
+				jukebox.setAdmin(true);
+			}else if(scan.equals("user")){
+				input = true;
+			}
+			//End change
+			else
 				System.out.println("Please say 'admin' or 'user'");
 		}
 		
-//		while (!input) {
-//			
-//		}
-
 		System.out.println("What would you like to do\n Press 1 for adding songs\n Press 2 for deleting songs");
-		while(!input) {
+		//Was changed by CJ during Sprint 3, was never entering due to input being set to true 
+		//right before this
+		//while(!input) {
+		boolean input2 = false;
+		while(!input2){ //End change
 			scan = scanner.nextLine();
 			if(scan.equals("1") || scan.equals("2")) 
-				input = true;
+				input2 = true;
 			else
 				System.out.println("Please press 1 or 2");
 		}

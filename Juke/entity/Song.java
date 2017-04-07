@@ -1,5 +1,7 @@
 package entity;
 /**
+ * A class which models a song, with all getters and setters
+ * 
  * Created by CJ on 3/17/2017.
  */
 public class Song {
@@ -35,6 +37,8 @@ public class Song {
 	/**
 	 * The artwork of the song
 	 */
+	//CJ: May change, can just use the artwork for the album
+	// if it exists
 	private String artwork;
 
 	/**
