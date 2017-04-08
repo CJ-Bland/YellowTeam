@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Optional;
 
 import entity.Song;
@@ -5,6 +6,7 @@ import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,27 +20,37 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 /**
  * A testing class which has a rudimentary UI and includes sorting and searching functionality
  * @author CJ
- *
+ * @version Sprint 3
  */
 public class Testing extends Application {
+
+	static MediaPlayer mediaPlayer;
 
 	private TableView<TestSong> table = new TableView<TestSong>();
 	private ObservableList<TestSong> data =
 			FXCollections.observableArrayList();
 
 	private final ObservableList<TestSong> fullData = FXCollections.observableArrayList(
-			new TestSong("ABC", "Michael Jackson", "abc", "C://Music/abc.mp3"),
-			new TestSong("Yakaty Sax", "Boots Randolph", "Yakaty Sax", "C://Music/sax.mp3")
+			new TestSong("Daybreak", "Unknown", "Unknown", "file:/C:/Daybreak.mp3"),
+			new TestSong("Yakaty Sax", "Boots Randolph", "Yakaty Sax", "file:/C:/Benny-hill-theme.mp3"),
+			new TestSong("Jam Funk Rhythm", "Unknown", "Unknown", "file:/C:/JamFunkRhythm-DRAFT.wav"),
+			new TestSong("Something Funky", "Unknown", "Unknown", "file:/C:/SomthingFunkyV3b.mp3"),
+			new TestSong("C90", "Unknown", "Unknown", "file:/C:/C90.mp3"),
+			new TestSong("Engine", "Unknown", "Unknown", "file:/C:/engine.wav"),
+			new TestSong("Slow Blues", "Unknown", "Unknown", "file:/C:/SlowBluesyV3.0.mp3")
 			);
 
 	final HBox hb = new HBox();
@@ -84,13 +96,38 @@ public class Testing extends Application {
 		fileCol.setCellValueFactory(
 				new PropertyValueFactory<Song, String>("file"));
 
-		//Pop
+		//Populates the table
 		data=fullData;
 		table.setItems(data);
 		table.getColumns().addAll(nameCol, artistCol, albumCol, fileCol);
 
+		//A handler to register which row is clicked
+		table.setRowFactory( tv -> {
+			TableRow<TestSong> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+					TestSong rowData = row.getItem();
+					System.out.println(rowData.getName().toString());
+
+					//WILL IMPLEMENT WITH PLAYSONG AND SONGQUEUE WHEN INTERFACE IS MADE
+					//Right now just plays when the song is clicked, not added to a queue
+					JFXPanel fxPanel = new JFXPanel();
+					
+					//bip gets file name from file column
+					String bip = rowData.getFile().toString();
+					Media hit = new Media(bip);
+					mediaPlayer = new MediaPlayer(hit);						
+					mediaPlayer.play();
+
+				}
+			});
+			return row ;
+		});
+
 		//Makes the file names column blank, unnecessary for users to see
 		//fileCol.setVisible(false);
+
+		//ADD FUNCTIONALITY IS ONLY HERE FOR TESTING PURPOSES, WILL NOT BE AVAILABLE TO USERS IN LATER VERSIONS
 
 		final TextField addName = new TextField();
 		addName.setPromptText("Name");
@@ -132,7 +169,7 @@ public class Testing extends Application {
 		searchTerm.setMaxWidth(fileCol.getPrefWidth());
 		searchTerm.setPromptText("Search Term");
 
-		
+
 		/**
 		 * Creates a search button and implements a case insensitive search of the songs, the column to be searched
 		 * through is chosen by the user through a dialog prompt
@@ -149,7 +186,7 @@ public class Testing extends Application {
 				alert.setHeaderText(null);
 				alert.setTitle("Select Search Focus");
 				alert.setContentText("Choose which field to search through");
-				
+
 				ButtonType bName = new ButtonType("Name");
 				ButtonType bArtist = new ButtonType("Artist");
 				ButtonType bAlbum = new ButtonType("Album");
@@ -158,18 +195,18 @@ public class Testing extends Application {
 				alert.getButtonTypes().setAll(bName, bArtist, bAlbum, bCancel);
 
 				Optional<ButtonType> result = alert.showAndWait();
-				
+
 				//Handles all the possible button presses
 				//Each button has a similar function (which I dont think can be put into helper functions)
-					//It searches through the chosen column, adds it to the new list, and if some song is found
-					//Adds the list to the table. If the user does not opt to view the full data, any further searches
-					//Will be from the sublist, not the full list of songs
+				//It searches through the chosen column, adds it to the new list, and if some song is found
+				//Adds the list to the table. If the user does not opt to view the full data, any further searches
+				//Will be from the sublist, not the full list of songs
 				if (result.get() == bName){
 					System.out.println("Searching name for " + searchTerm.getText());
 					int i=0;
 					boolean found = false;
 					do{
-						
+
 						if(data.get(i).getName().toLowerCase().equals(searchTerm.getText().toLowerCase()) )
 						{
 							//System.out.println(searchTerm.getText());
@@ -267,7 +304,7 @@ public class Testing extends Application {
            not have a header */
 		infoBox(infoMessage, titleBar, null);
 	}
-	
+
 	//Dialog methods which create the not found box
 	public static void infoBox(String infoMessage, String titleBar, String headerMessage)
 	{
@@ -287,42 +324,42 @@ public class Testing extends Application {
 		private final SimpleStringProperty artist;
 		private final SimpleStringProperty album;
 		private final SimpleStringProperty file;
+		//private final SimpleStringProperty plays;
 
 		private TestSong(String name, String artist, String album, String file) {
 			this.name = new SimpleStringProperty(name);
 			this.artist = new SimpleStringProperty(artist);
 			this.album = new SimpleStringProperty(album);
 			this.file = new SimpleStringProperty(file);
-		}
+		}		
 
 		public String getName() {
-			return name.get();
+			return name.toString();
 		}
 		public void setName(String name) {
 			this.name.set(name);
 		}
 
 		public String getArtist() {
-			return artist.get();
+			return artist.toString();
 		}
 		public void setArtist(String artist) {
 			this.artist.set(artist);
 		}
 
 		public String getAlbum() {
-			return album.get();
+			return album.toString();
 		}
 		public void setAlbum(String album) {
 			this.album.set(album);
 		}
 
 		public String getFile() {
-			return file.get();
+			return file.toString();
 		}
+		
 		public void setFile(String file) {
 			this.file.set(file);
 		}
-
 	}
-
 } 

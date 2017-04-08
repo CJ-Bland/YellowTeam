@@ -17,7 +17,12 @@ public class Artist {
     /**
      * The albums by the artist
      */
-    private ArrayList<Song> albums;
+    private ArrayList<Album> albums;
+    
+    public Artist(String name, ArrayList<Album> album){
+    	this.name = name;
+    	this.albums = album;
+    }
     
     //Eclipse generated methods which get and set all fields
 	public String getName() {
@@ -26,10 +31,22 @@ public class Artist {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public ArrayList<Song> getAlbums() {
+	public ArrayList<Album> getAlbums() {
 		return albums;
 	}
-	public void setAlbums(ArrayList<Song> albums) {
+	public void setAlbums(ArrayList<Album> albums) {
 		this.albums = albums;
 	}
+	
+	public String toString(){
+		String a = "";
+		for(int i=0; i<albums.size(); i++){
+			a+= albums.get(i).getName();
+		}
+		return "Artist{name= " + name +
+				", albums= " + a + "}";
+						
+	}
+	
+	
 }

@@ -10,13 +10,13 @@ import entity.Song;
 /**
  * Driver of the Jukebox
  * 
- * @author Simon, Prem, CJ 
+ * @author Simon, Prem
  */
 public class JukeboxDriver {
 
 	static PlaySong playedSong;
 	static Jukebox jukebox;
-
+ 
 	/**
 	 * Main method to select and play song.
 	 * @param args
@@ -26,6 +26,7 @@ public class JukeboxDriver {
 		jukebox = new Jukebox(0);
 
 		String scan = "";
+		int scanInt = 0;
 		Song song;
 
 		boolean resultCoin;
@@ -38,110 +39,75 @@ public class JukeboxDriver {
 		
 		while (!input) {
 			scan = scanner.nextLine();
-			//Commented out by CJ during Sprint 3: sets admin to true if the user inputs user or admin,
-			//needs two different branches
-			/*if(scan.equals("admin") || scan.equals("user")) {
-				input = true;
-				jukebox.setAdmin(true);
-			}*/
 			if(scan.equals("admin")){
 				input = true;
 				jukebox.setAdmin(true);
 			}else if(scan.equals("user")){
 				input = true;
 			}
-			//End change
 			else
 				System.out.println("Please say 'admin' or 'user'");
 		}
 		
-		System.out.println("What would you like to do\n Press 1 for adding songs\n Press 2 for deleting songs");
-		//Was changed by CJ during Sprint 3, was never entering due to input being set to true 
-		//right before this
-		//while(!input) {
-		boolean input2 = false;
-		while(!input2){ //End change
+		while (!scan.equals("Q")) {
+
+			System.out.println("What do you want to do ?\n"
+					+ "(insert credit : I)\n"
+					+ "(change credit price : CP)\n"
+					+ "(addSongsInList : A)\n"
+					+ "(quit : Q)");
+
 			scan = scanner.nextLine();
-			if(scan.equals("1") || scan.equals("2")) 
-				input2 = true;
-			else
-				System.out.println("Please press 1 or 2");
-		}
 
-		if(scan.equals("1")) {
-			while (addMoreSong) {
-				System.out.println("Enter song name to add the song");
-
-				String name = scanner.nextLine();
-
-				System.out.println("Enter song location to add the song");
-
-				String location = scanner.nextLine();
-
-				System.out.println("Enter song fileName to add the song");
-
-				String fileName = scanner.nextLine();
-
-				song = new Song(name, "", "", "", location, fileName,"");
-
-				jukebox.getSongList().addSong(song);
-
-				System.out.println("The song" + name + 
-						"has been added.\n Do you want to add another song ? (yes or no)");
-
-				scan = scanner.nextLine();
-				if (scan.equals("no"))
-					addMoreSong = false;
-
-			}
-
-			System.out.println("How much money do you want to add ? ($1 : 1 song, $3 : 5 songs)");
-			resultCoin = jukebox.insertCoin(Integer.parseInt(scanner.nextLine()));
-
-			if (resultCoin) {
-
-				System.out.println("Enter the name of a song :");
-				song = jukebox.getSongList().getSongByName(scanner.nextLine());
-
-				if (song != null) {
-
-					System.out.println("Add the song to the queue ? (yes or no)");
-					scanner = new Scanner(System.in);
-					scan = scanner.nextLine();
-
-					if (scan.equals("yes")) {
-
-						jukebox.getSongQueue().add(song);
-
-						System.out.println("====Now Playing Song====");
-
-						//Set up the media playing object
-						playedSong = new PlaySong();
-
-						//Give it a tune to play
-						playedSong.setMediaPlayer(song.getLocation(), song.getFileName());
+			switch(scan) {
+			case "I":
+				System.out.println("How much money do you want to put ?\n"
+						+ jukebox.getOneCreditPrice() + "$ for 1 credit\n"
+						+ jukebox.getFiveCreditsPrice() + "$ for 5 credits");
+				scanInt = scanner.nextInt();
+				if (jukebox.insertCoin(scanInt)) {
+					jukebox.getSongList().viewLibrary();
+					if (scanInt == jukebox.getOneCreditPrice()) {
+						System.out.println("Choose the song you want to add to the queue:");
+						jukebox.getSongQueue().add(getSong(scanner.nextLine()));
+					} else {
+						System.out.println("Choose the first song you want to add to the queue:");
+						jukebox.getSongQueue().add(getSong(scanner.nextLine()));
+						System.out.println("Choose a second song:");
+						jukebox.getSongQueue().add(getSong(scanner.nextLine()));
+						System.out.println("Choose a third song");
+						jukebox.getSongQueue().add(getSong(scanner.nextLine()));
+						System.out.println("Choose a forth song:");
+						jukebox.getSongQueue().add(getSong(scanner.nextLine()));
+						System.out.println("Choose a last song");
+						jukebox.getSongQueue().add(getSong(scanner.nextLine()));
 					}
-
 				} else {
-					System.out.println("No song find with that name.");
+					System.out.println("You didn't insert a valid amount");
 				}
-
-			} else {
-				System.out.println("This amount is incorrect.");
+			case "CP":
+				if (jukebox.isAdmin()) {
+					System.out.println("Price for 1 credit (current is " + jukebox.getOneCreditPrice() + "):");
+					scan = scanner.nextLine();
+					jukebox.setOneCreditPrice(Integer.parseInt(scan));
+					System.out.println("Price for 5 credits (current is " + jukebox.getFiveCreditsPrice() + "):");
+					scan = scanner.nextLine();
+					jukebox.setFiveCreditsPrice(Integer.parseInt(scan));
+				} else
+					System.out.println("You are not an admin.");
+			case "A":
+				if (jukebox.isAdmin())
+					addSongsInList();
+				else
+					System.out.println("You are not an admin");
 			}
-
-		} else if (scan.equals("2")) {
-			System.out.println("Enter song name to delete the song");
-			//jukebox.getSongList().deleteSong(song);				
-		} else {
-			System.out.println("This amount is incorrect.");
 		}
 	}
 
 	/**
 	 * This method read the song files to add them in the list
 	 */
-	public void addSongsInList() {
+	public static void addSongsInList() {
 		// I create and insert the songs by reading each line of the files
 		try {
 			for (String line : Files.readAllLines(Paths.get("src/data/songs.txt"))) {			
@@ -155,6 +121,10 @@ public class JukeboxDriver {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
+	}
+
+	public static Song getSong(String song) {
+		return null;
 	}
 
 }

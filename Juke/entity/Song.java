@@ -3,33 +3,35 @@ package entity;
  * A class which models a song, with all getters and setters
  * 
  * Created by CJ on 3/17/2017.
+ * @author CJ
+ * @version Edited on Sprint 3, added to toString and equals
  */
 public class Song {
 
-    /**
-     * The name of the song
-     */
-    private String name;
-    /**
-     * The artist of the song
-     */
-    private String artist;
-    /**
-     * The album of the song
-     */
-    private String album;
-    /**
-     * The year of the song
-     */
-    private String year;
-    /**
-     * The number of times the song is played
-     */
-    private int plays;
-    /**
-     * The location of the song
-     */
-    private String location;
+	/**
+	 * The name of the song
+	 */
+	private String name;
+	/**
+	 * The artist of the song
+	 */
+	private String artist;
+	/**
+	 * The album of the song
+	 */
+	private String album;
+	/**
+	 * The year of the song
+	 */
+	private String year;
+	/**
+	 * The number of times the song is played
+	 */
+	private int plays;
+	/**
+	 * The location of the song
+	 */
+	private String location;
 	/**
 	 * The file name
 	 */
@@ -175,5 +177,49 @@ public class Song {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
+	public String toString(){
+		return "Song{" + "name=" + name + 
+				", artist=" + artist + 
+				", album=" + album + 
+				", year=" + year + 
+				", plays=" + plays + 
+				", location=" + location + 
+				", file name=" + fileName + 
+				", artwork=" + artwork + "}";
+	} 
+
+	@Override
+	public boolean equals(Object o){
+		if (this == o) 
+			return true;
+
+		if (o == null) 
+			return false;
+
+		if (getClass() != o.getClass()) 
+			return false;
+
+		Song song = (Song) o;
+
+		if(!name.equals(song.name)) return false;
+
+		if(!artist.equals(song.artist)) return false;
+
+		if(!album.equals(song.album)) return false;
+
+		if(!year.equals(song.year)) return false;
+
+		if(plays != song.plays) 
+			return false;
+
+		if(!location.equals(song.location)) return false;
+
+		if(!fileName.equals(song.fileName)) return false;
+
+		if(!artwork.equals(song.artwork)) return false;
+
+		return true;
+	}
+
 }

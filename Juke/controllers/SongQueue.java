@@ -52,5 +52,12 @@ public class SongQueue {
 	public void remove() {
 		queue.remove();
 	}
+	/**
+	 * This method returns the size of the queue
+	 * @return the size of the queue
+	 */
+	public int size(){
+		return queue.size();
+	}
 	
 }

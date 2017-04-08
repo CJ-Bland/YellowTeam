@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 /**
  * Created by CJ on 3/17/2017.
+ * Modified by Simon
  */
 public class Jukebox {
 
@@ -51,10 +52,25 @@ public class Jukebox {
 	public Jukebox(int credits) {
 		this.songList = new SongList();
 		this.songQueue = new SongQueue();
-		this.credits = credits;
+		this.credits = 0;
 		this.totalFunds = 0;
 		this.displayVName = true;
 		this.isAdmin = false;
+		this.oneCreditPrice = 1;
+		this.fiveCreditsPrice = 3;
+		this.venueName = "La belle avenue";
+	}
+	
+	public Jukebox(){
+		this.songList = new SongList();
+		this.songQueue = new SongQueue();
+		this.credits = 0;
+		this.totalFunds = 0;
+		this.displayVName = true;
+		this.isAdmin = false;
+		this.oneCreditPrice = 1;
+		this.fiveCreditsPrice = 3;
+		this.venueName = "La belle avenue";
 	}
 
 	/**
@@ -157,7 +173,7 @@ public class Jukebox {
 	/**
 	 * @param displayVName
 	 */
-	public void displayVenueName(boolean displayVName) {
+	public void getdisplayVenueName(boolean displayVName) {
 		this.displayVName = displayVName;
 	}
 

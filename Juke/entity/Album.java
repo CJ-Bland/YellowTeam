@@ -1,4 +1,7 @@
 package entity;
+
+import java.util.ArrayList;
+
 /**
  * A class which models an album
  * 
@@ -23,6 +26,18 @@ public class Album {
 	 * The artwork of the song
 	 */
 	private String artwork;
+	/**
+	 * List of songs on the album
+	 */
+	private ArrayList<Song> songs;
+	
+	public Album(String name, String artist, String year, String artwork, ArrayList<Song> songs){
+		this.name = name;
+		this.artist = artist;
+		this.year = year;
+		this.artwork = artwork;
+		this.songs = songs;
+	}
 	
 	//Eclipse generated methods which get and set all fields
 	
