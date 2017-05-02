@@ -1,0 +1,61 @@
+.list_item_selected_base{-fx-base: #FFFFAA;}
+
+.list_item_unselected_base{-fx-base: #FFFFDD; }
+
+.list_item_selected_background{-fx-background-color: #AAAAFF;  }
+
+.list_item_unselected_background{-fx-background-color: #DDDDFF;  }
+
+.selected_text{ -fx-text-fill: #000088;}
+
+.unselected_text{-fx-text-fill: #000000;}
+
+.rowItem{ -fx-padding: 5 5 5 5;}
+	
+.listBackground{-fx-background-color: #AAAAFF;}
+
+.test{-fx-background-color: #FF00FF;}
+
+
+
+/**Style for the pop up dialog */
+.tel_dialog{
+	-fx-padding: 10 10 10 10;
+}
+
+/**The style for all background items*/
+.generalBackground, .tel_dialog{
+	-fx-background-color: linear-gradient(#CCCCFF, #8888FF);
+}
+
+
+/**Style for all buttons */
+.button{
+    -fx-background-color: 
+        linear-gradient(#FFFFFF, #AAAAAA),/**outer border */
+        linear-gradient(#F0F0FF, #CCCCFF),/**mid border */
+        linear-gradient(#EEEEFF, #CCCCDD),/**Inner boarder */
+        linear-gradient(#9090ff 0%, #c0c0f8 50%, #a0a0ee 100%),/**Gradient of the button*/
+        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0.4));/**White Glint */
+    -fx-background-radius: 20;
+    -fx-background-insets: 0,1,2,3,0;
+    -fx-text-fill: #004b65;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+ 
+}
+
+.button:armed{
+    -fx-background-color: 
+        linear-gradient(#FFFFFF, #AAAAAA),/**outer border */
+        linear-gradient(#F0F0FF, #CCCCFF),/**mid border */
+        linear-gradient(#EEEEFF, #CCCCDD),/**Inner boarder */
+        linear-gradient(#7070CC 0%, #A0A0E0 50%, #7070CC 100%),/**Gradient of the button*/
+        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0.0));/**White Glint */
+    -fx-background-radius: 20;
+    -fx-background-insets: 0,1,2,3,0;
+    -fx-text-fill: #505050;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+ 
+}

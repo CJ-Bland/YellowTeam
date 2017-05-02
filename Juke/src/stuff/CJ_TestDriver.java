@@ -1,3 +1,4 @@
+package stuff;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -35,10 +36,11 @@ public class CJ_TestDriver extends Application implements ChangeHandler{
 				this.stage = primaryStage;
 				
 				//Make the program full screen.	
-				primaryStage.setFullScreen(true);
+				//primaryStage.setFullScreen(true);
 							
 				//The scene for the first screen.
 				Scene scene = new Scene(new Pane(),800,600);
+				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				this.rootScene = scene;
 				
 				//show the home screen

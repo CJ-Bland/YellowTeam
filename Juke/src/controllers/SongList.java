@@ -78,6 +78,7 @@ public class SongList {
      */
   //CJ: Multiple songs might have been released in the same year, 
     //shouldn't this return a list of songs? 
+    /*
     public Song getSongByYear(String year){
     	Song song = null;
         for(Song s: songList){
@@ -86,7 +87,7 @@ public class SongList {
             }
         }
         return song;
-    }
+    }*/
     
     /**
      * Delete the song from the list

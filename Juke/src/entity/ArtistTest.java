@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,7 +46,7 @@ public class ArtistTest {
 	@Before
 	public void setUp() throws Exception {
 		songs = new ArrayList<Song>();
-		songs.add(new Song("Snakes", "Voltaire", "The Devils Bris", "1990", "file:/C:/", "snakes.mp3", "img1.png"));
+		songs.add(new Song("Snakes", "Voltaire", "The Devils Bris",  "file:/C:/", "snakes.mp3", new ImageView(new Image("/img1.jpg"))));
 		albums = new ArrayList<Album>();
 		albums.add(new Album("Top Hits", "Journey", "1980", "img2.jpg", songs));
 		a1 = new Artist("ABBA", albums);
@@ -69,17 +72,17 @@ public class ArtistTest {
 
 	@Test
 	public void testGetAlbums() {
-		songs.add(new Song("Snakes", "Voltaire", "The Devils Bris", "1990", "file:/C:/", "snakes.mp3", "img1.png"));		
+		songs.add(new Song("Snakes", "Voltaire", "The Devils Bris", "file:/C:/", "snakes.mp3", new ImageView(new Image("/img1.png"))));		
 		albums.add(new Album("Top Hits", "Journey", "1980", "img2.jpg", songs));
 		assertEquals("Test " + test + ": getAlbums", albums, a1.getAlbums());
 	}
 
 	@Test
 	public void testSetAlbums() {
-		ArrayList<Song> songs1 = new ArrayList<Song>();
-		ArrayList<Album> album1 = new ArrayList<Album>();
+		//ArrayList<Song> songs1 = new ArrayList<Song>();
+		//ArrayList<Album> album1 = new ArrayList<Album>();
 		
-		songs.add(new Song("Snekes", "Volebear", "The Angels Bris", "1890", "file:/C:/Music/", "snekes.mp3", "img15.png"));		
+		songs.add(new Song("Snekes", "Volebear", "The Angels Bris", "file:/C:/Music/", "snekes.mp3", new ImageView(new Image("/img1.png"))));		
 		albums.add(new Album("Flop Hits", "Tourney", "1280", "img21.jpg", songs));
 		a1.setAlbums(albums);
 		assertEquals("Test  " + test + " setAlbums", albums, a1.getAlbums());

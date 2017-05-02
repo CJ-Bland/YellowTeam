@@ -2,9 +2,9 @@ package controllers;
 
 import static org.junit.Assert.assertEquals;
 
-import project.Jukebox;
+/*import project.Jukebox;
 import project.Song;
-import project.SongQueue;
+import project.SongQueue;*/
 
 /**
  * @author Simon
@@ -122,17 +122,17 @@ public class JukeboxTest {
 	}
 	
 	/**Testing displaying venue name**/
-	@org.junit.Test
+	/*@org.junit.Test
 	public void displayVenueName() throws Exception {
 		jukebox.displayVenueName(false);
 		assertEquals("Test " + test + " displaying venue name", false, jukebox.getDisplayVenueName());
-	}
+	}*/
 	
 	/**Testing getting display venue name value**/
-	@org.junit.Test
+	/*@org.junit.Test
 	public void getDisplayVenueName() throws Exception {
 		assertEquals("Test " + test + " getting display venue name value", true, jukebox.getDisplayVenueName());
-	}
+	}*/
 	
 	/**Testing getting admin value**/
 	@org.junit.Test

@@ -34,8 +34,8 @@ public class SongQueueTest {
 		// one-time initialization code
 		System.out.println("@BeforeClass - oneTimeSetUp");
 		songQueue = new SongQueue();
-		song = new Song("name", "artist", "album", "year", 
-			"location", "filename", "artwork");
+		song = new Song("name", "artist", "album", 
+			"location", "filename", null);
 	}
 
 	//Finish with things used for all tests

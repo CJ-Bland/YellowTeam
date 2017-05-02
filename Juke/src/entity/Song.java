@@ -1,4 +1,7 @@
 package entity;
+
+import javafx.scene.image.ImageView;
+
 /**
  * A class which models a song, with all getters and setters
  * 
@@ -22,8 +25,9 @@ public class Song {
 	private String album;
 	/**
 	 * The year of the song
+	 * As of sprint 3, decided to be unnecessary
 	 */
-	private String year;
+	//private String year;
 	/**
 	 * The number of times the song is played
 	 */
@@ -41,7 +45,7 @@ public class Song {
 	 */
 	//CJ: May change, can just use the artwork for the album
 	// if it exists
-	private String artwork;
+	private ImageView artwork;
 
 	/**
 	 * The constructor of the song class
@@ -54,43 +58,48 @@ public class Song {
 	 * @param fileName
 	 * @param artwork
 	 */
-	public Song(String name, String artist, String album, String year, 
-			String location, String fileName, String artwork) {
+	public Song(String name, String artist, String album, /*String year,*/ 
+			String location, String fileName, ImageView artwork) {
 		this.name = name;
 		this.artist = artist;
 		this.album = album;
-		this.year = year;
+		//this.year = year;
 		this.plays = 0;
 		this.location = location;
 		this.fileName = fileName;
 		this.artwork = artwork;
 	}
 
+	
 	/**
 	 * @return	the year of the song
 	 */
+	/*
 	public String getYear() {
 		return year;
 	}
+	*/
 
 	/**
 	 * @param year
 	 */
+	/*
 	public void setYear(String year) {
 		this.year = year;
 	}
+	*/
 
 	/**
 	 * @return	the artwork of the song
 	 */
-	public String getArtwork() {
+	public ImageView getArtwork() {
 		return artwork;
 	}
 
 	/**
 	 * @param artwork
 	 */
-	public void setArtwork(String artwork) {
+	public void setArtwork(ImageView artwork) {
 		this.artwork = artwork;
 	}
 
@@ -182,7 +191,7 @@ public class Song {
 		return "Song{" + "name=" + name + 
 				", artist=" + artist + 
 				", album=" + album + 
-				", year=" + year + 
+//				", year=" + year + 
 				", plays=" + plays + 
 				", location=" + location + 
 				", file name=" + fileName + 
@@ -208,10 +217,9 @@ public class Song {
 
 		if(!album.equals(song.album)) return false;
 
-		if(!year.equals(song.year)) return false;
+//		if(!year.equals(song.year)) return false;
 
-		if(plays != song.plays) 
-			return false;
+		if(plays != song.plays) return false;
 
 		if(!location.equals(song.location)) return false;
 

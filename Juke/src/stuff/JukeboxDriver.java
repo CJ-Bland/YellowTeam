@@ -1,3 +1,4 @@
+package stuff;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -97,16 +98,18 @@ public class JukeboxDriver {
 					System.out.println("You are not an admin.");
 			case "A":
 				if (jukebox.isAdmin())
-					addSongsInList();
-				else
+					//addSongsInList();
+				//else
 					System.out.println("You are not an admin");
 			}
 		}
 	}
 
+	
 	/**
 	 * This method read the song files to add them in the list
 	 */
+	/*
 	public static void addSongsInList() {
 		// I create and insert the songs by reading each line of the files
 		try {
@@ -121,7 +124,7 @@ public class JukeboxDriver {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
-	}
+	}*/
 
 	public static Song getSong(String song) {
 		return null;
