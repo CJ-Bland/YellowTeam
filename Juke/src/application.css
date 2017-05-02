@@ -1,0 +1,152 @@
+/**.list_item_selected_base{-fx-base: #FFFFAA;}
+
+.list_item_unselected_base{-fx-base: #FFFFDD; }
+
+.list_item_selected_background{-fx-background-color: #AAAAFF;  }
+
+.list_item_unselected_background{-fx-background-color: #DDDDFF;  }
+
+.selected_text{ -fx-text-fill: #000088;}
+
+.unselected_text{-fx-text-fill: #000000;}
+
+.rowItem{ -fx-padding: 5 5 5 5;}
+	
+.listBackground{-fx-background-color: #AAAAFF;}
+
+.test{-fx-background-color: #FF00FF;}
+
+*/
+/**Style for the pop up dialog */
+.tel_dialog{
+	-fx-padding: 10 10 10 10;
+}
+
+.label {
+    /*-fx-font-size: 20px;*/
+}
+
+.outline.label .text {
+    -fx-fill: white;
+    -fx-stroke: black;
+    -fx-stroke-width: 1px;
+}
+
+/**The style for all background items*/
+.generalBackground, .tel_dialog{
+	-fx-background-color: linear-gradient(#CCCCFF, #8888FF);
+}
+
+.root{
+   /* -fx-background-color: #262626;*/
+   -fx-background-color: #bd00ff;
+}
+
+.table-view{
+   -fx-background-color: transparent;
+}
+
+.table-view:focused{
+    -fx-background-color: transparent;
+}
+
+.table-view .filler{
+	-fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(#131313 0%, #424141 100%);
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: white;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #616161;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */
+}
+
+.table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, #424242;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */  
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #005797;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+
+
+.table-view > .virtual-flow > .scroll-bar > .increment-button, 
+.table-view > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
+}
+
+#hbox{
+	-fx-font-size: 15; 
+	-fx-padding: 20; 
+	-fx-alignment: center; 
+	-fx-background-color: linear-gradient(#DB00DB, #730073);
+}
+
+#hbox2{
+	-fx-font-size: 15; 
+	/*-fx-padding: 20;*/ 
+	-fx-alignment: center; 
+	-fx-background-color: linear-gradient(#DB00DB, #730073);
+}
+
+/**Style for all buttons */
+.button{
+    -fx-background-color: 
+        linear-gradient(#FFFFFF, #AAAAAA),/**outer border */
+        linear-gradient(#F0F0FF, #CCCCFF),/**mid border */
+        linear-gradient(#EEEEFF, #CCCCDD),/**Inner boarder */
+       	/* linear-gradient(#9090ff 0%, #c0c0f8 50%, #a0a0ee 100%),/**Gradient of the button*/
+       	linear-gradient(#DB00DB 0%, #C400C4 50%, #730073 100%)
+        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0.4));/**White Glint */
+    -fx-background-radius: 20;
+    -fx-background-insets: 0,1,2,3,0;
+    -fx-text-fill: #f9f9f9;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+ 
+}
+
+.button:armed{
+    -fx-background-color: 
+        linear-gradient(#FFFFFF, #AAAAAA),/**outer border */
+        linear-gradient(#F0F0FF, #CCCCFF),/**mid border */
+        linear-gradient(#EEEEFF, #CCCCDD),/**Inner boarder */
+        linear-gradient(#b000b0 0%, #890089 50%, #780178 100%),/**Gradient of the button*/
+        linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0.0));/**White Glint */
+    -fx-background-radius: 20;
+    -fx-background-insets: 0,1,2,3,0;
+    -fx-text-fill: #f9f9f9;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+ 
+}

@@ -6,23 +6,39 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 
 import entity.Song;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -34,6 +50,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.util.Duration;
 /**
  * A tester screen based on class example
  * 
@@ -44,11 +62,29 @@ public class Screen1_View extends BorderPane{
 
 	ChangeHandler screenChanger;
 	Button home;
+	final ProgressBar progress = new ProgressBar();
+	private ChangeListener<Duration> progressChangeListener;
+	public static final int FILE_EXTENSION_LEN = 3;
+
+	final Label currentlyPlaying = new Label();
+
 	final HBox searchHB = new HBox();
-	final HBox bottomPane = new HBox();
-	
-private TableView<Song> table = new TableView<Song>();
-	
+	final HBox homeHB = new HBox();
+	final AnchorPane topPane = new AnchorPane();
+
+	static MediaPlayer mediaPlayer = null;
+	private Queue<Media> queue = new LinkedList<Media>();
+
+	public Song currentSong;
+	public ImageView currentImage = new ImageView();
+
+	Pane pane = new Pane();
+	Label nameL = new Label();
+	Label artistL = new Label();
+	Label albumL = new Label();
+
+	private TableView<Song> table = new TableView<Song>();
+
 	private ObservableList<Song> data =
 			FXCollections.observableArrayList();
 
@@ -56,29 +92,100 @@ private TableView<Song> table = new TableView<Song>();
 			new Song("Daybreak", "Unknown", "Unknown", "","file:/C:/Daybreak.mp3", new ImageView(new Image("/img.jpg"))),
 			new Song("Yakaty Sax", "Boots Randolph", "Yakaty Sax", "","file:/C:/Benny-hill-theme.mp3", null),
 			new Song("Jam Funk Rhythm", "Unknown", "Unknown","","file:/C:/JamFunkRhythm-DRAFT.wav", new ImageView(new Image("/img1.jpg"))),
-			new Song("Something Funky", "Unknown", "Unknown", "","file:/C:/SomthingFunkyV3b.mp3", new ImageView(new Image("/img.jpg"))),
+			new Song("Something Funky", "Unknown", "Unknown", "","file:/C:/SomthingFunkyV3b.mp3", new ImageView(new Image("/img3.jpg"))),
 			new Song("C90", "Unknown", "Unknown", "","file:/C:/C90.mp3", null),
 			new Song("Engine", "Unknown", "Unknown", "", "file:/C:/engine.wav", new ImageView(new Image("/img1.jpg"))),
 			new Song("Slow Blues", "Unknown", "Unknown", "", "file:/C:/SlowBluesyV3.0.mp3", null)
 			);
 
-	public Screen1_View(ChangeHandler handler){
+	public Screen1_View(ChangeHandler handler){			   
 
-		screenChanger = handler;				
-		
+		screenChanger = handler;
+		pane.getChildren().add(currentImage);
+		currentImage.setFitWidth(115);
+		currentImage.setFitHeight(115);
+		currentImage.setPreserveRatio(true);
+
 		this.addTopPanel();
 		this.addCenterPanel();
 		this.addBottomPanel();
 		this.addLeftPanel();
 		this.addRightPanel();
-		
+		this.setOnRowClick();
 	}
-	
-	public void addTopPanel(){
+	public void createList(){
+		final List<MediaPlayer> players = new ArrayList<>();
+		for (Song file : data) {
+			players.add(createPlayer(file.getFileName()));
+		}
+		if (players.isEmpty()) {
+			System.out.println("File names not valid");
+			Platform.exit();
+			return;
+		}    
+	}
+
+	private MediaPlayer createPlayer(String mediaSource) {
+		final Media media = new Media(mediaSource);
+		final MediaPlayer player = new MediaPlayer(media);
+		player.setOnError(new Runnable() {
+			@Override public void run() {
+				System.out.println("Media error occurred: " + player.getError());
+			}
+		});
+		return player;
+	}
+
+	public void setOnRowClick(){
+		table.setRowFactory( tv -> {
+			TableRow<Song> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+					Song rowData = row.getItem();
+					System.out.println(rowData.getName().toString());
+
+					//WILL IMPLEMENT WITH PLAYSONG AND SONGQUEUE WHEN INTERFACE IS MADE
+					//Right now just plays when the song is clicked, not added to a queue
+
+					//bip gets file name from file column		
+					String bip = rowData.getFileName().toString();
+					Media hit = new Media(bip);
+					queue.add(hit);
+					
+					//update current song for now playing display
+					currentSong = rowData;
+					currentImage.setImage(currentSong.getArtwork().getImage());									
+
+					if(mediaPlayer == null){						
+						//mediaPlayer = new MediaPlayer(hit);
+						mediaPlayer = new MediaPlayer(queue.poll());
+						mediaPlayer.play();
+						setCurrentlyPlaying(mediaPlayer);
+					}
+					else{						
+						mediaPlayer.stop();
+						mediaPlayer = new MediaPlayer(hit);
+						mediaPlayer.play();
+						setCurrentlyPlaying(mediaPlayer);
+					}					
+				}
+			});
+			return row ;
+		});
+	}
+
+
+	public void addTopPanel(){	
+		topPane.setId("Top");
+		
+		home = new Button("Home");	
+		home.setOnAction(buttonHandler);	 				
+		homeHB.getChildren().add(home);	
+
 		final TextField searchTerm = new TextField();
 		//searchTerm.setMaxWidth(.getPrefWidth());
 		searchTerm.setPromptText("Search Term");
-		
+
 		final Button search = new Button("Search");
 		search.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -189,28 +296,33 @@ private TableView<Song> table = new TableView<Song>();
 
 		searchHB.getChildren().addAll(searchTerm, search, viewAll);
 		searchHB.setSpacing(5);
-		searchHB.getStyleClass().add("hbox");
-		
-		this.setTop(searchHB);
-		
+		searchHB.setAlignment(Pos.CENTER_RIGHT);
+		topPane.getChildren().addAll(homeHB, searchHB);
+		AnchorPane.setRightAnchor(searchHB, 5.0);
+		AnchorPane.setTopAnchor(searchHB, 5.0);
+		AnchorPane.setLeftAnchor(homeHB, 5.0);
+		AnchorPane.setTopAnchor(homeHB, 5.0);
+		topPane.setId("hbox");
+		this.setTop(topPane);
+
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public void addCenterPanel(){
-    	table.setEditable(true);
-    	
-    	table.setEditable(true);		
-		
+		table.setEditable(true);
+
+		table.setEditable(true);		
+
 		//Creates all the columns of the table
-		
+
 		TableColumn<Song, ImageView> imgCol = new TableColumn<Song, ImageView>("Artwork");
 		imgCol.setMinWidth(50);
 		imgCol.setPrefWidth(100);
 		imgCol.setMaxWidth(200);
 		imgCol.setCellValueFactory(
-				new PropertyValueFactory<Song, ImageView>("artwork"));		          
-		
+				new PropertyValueFactory<Song, ImageView>("artwork"));					
+
 		TableColumn<Song, String> nameCol = new TableColumn<Song, String>("Song Name");
 		nameCol.setMinWidth(50);
 		nameCol.setPrefWidth(100);
@@ -238,7 +350,7 @@ private TableView<Song> table = new TableView<Song>();
 		fileCol.setMaxWidth(500);
 		fileCol.setCellValueFactory(
 				new PropertyValueFactory<Song, String>("fileName"));
-				
+
 		//Populates the table
 		data=fullData;
 		for(int i =0; i < data.size(); i++){
@@ -254,41 +366,80 @@ private TableView<Song> table = new TableView<Song>();
 		table.setItems(data);
 		table.getColumns().addAll(imgCol, nameCol, artistCol, albumCol, fileCol);
 		//table.setMaxSize(500, 500);
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);		
 		this.setCenter((table));
-		
+
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);		
 		
-    }
-	
-	 public void addBottomPanel(){
-	        //Create buttons and listeners
-	        home = new Button("Home");	
-	        home.setOnAction(buttonHandler);
+	}
 
-	        //place buttons on panel that is added at the Bottom.	   
-	        bottomPane.setId("South");
-	        bottomPane.setSpacing(10.0);
-	        bottomPane.setAlignment(Pos.CENTER);
-	        bottomPane.getChildren().add(home);
+	public void addBottomPanel(){	 
+		
+		final VBox bottomVB = new VBox();
+		//bottomVB.setStyle("-fx-font-size: 15; -fx-padding: 20; -fx-alignment: center; -fx-background-color: linear-gradient(#CCCCFF, #8888FF);");
+		bottomVB.setId("hbox");
+		
+		final Label label = new Label("NOW PLAYING");
+		label.setFont(new Font("Arial", 25));
+		label.setTextFill(Color.web("#f9f9f9"));
+		//label.getStyleClass().add("outline");		
 
-	        //Style the bottom panel
-	        bottomPane.getStyleClass().add("hbox");
-	        
-	        //Add panel to the bottom.
-	        this.setBottom(bottomPane);	        
-	        
-	    }
-	 
-	 public void addLeftPanel(){
-			
-		}
-	 
-	 public void addRightPanel(){
-			
+		final HBox songInfo = new HBox(20);		 		
+
+		final VBox content = new VBox(10);
+		content.getChildren().setAll(		        
+				nameL,
+				artistL, 
+				albumL		        
+				);
+		nameL.setTextFill(Color.web("#f9f9f9"));
+		artistL.setTextFill(Color.web("#f9f9f9"));
+		albumL.setTextFill(Color.web("#f9f9f9"));
+
+		songInfo.getChildren().setAll(pane, content, progress);
+		songInfo.setAlignment(Pos.CENTER);
+		HBox.setHgrow(pane, Priority.ALWAYS);
+		HBox.setHgrow(content, Priority.ALWAYS);
+		HBox.setHgrow(progress, Priority.ALWAYS);
+
+		bottomVB.getChildren().setAll(label, songInfo);
+		bottomVB.setAlignment(Pos.CENTER);
+		VBox.setMargin(label, new Insets(5, 10, 20, 10));
+		this.setBottom(bottomVB);
+		progress.setMaxWidth(Double.MAX_VALUE);
+		//HBox.setHgrow(progress, Priority.ALWAYS);
+	}
+
+	public void addLeftPanel(){
+
+	}
+
+	public void addRightPanel(){
+
+	}
+	/** sets the currently playing label to the label of the new media player and updates the progress monitor. */
+	private void setCurrentlyPlaying(final MediaPlayer newPlayer) {
+		newPlayer.seek(Duration.ZERO);
+
+		progress.setProgress(0);
+		progressChangeListener = new ChangeListener<Duration>() {
+			@Override public void changed(ObservableValue<? extends Duration> observableValue, Duration oldValue, Duration newValue) {
+				progress.setProgress(1.0 * newPlayer.getCurrentTime().toMillis() / newPlayer.getTotalDuration().toMillis());
+				progress.setStyle("-fx-accent: yellow;");
+			}
+		};
+		newPlayer.currentTimeProperty().addListener(progressChangeListener);
+
+		String source = newPlayer.getMedia().getSource();
+		source = source.substring(0, source.length() - FILE_EXTENSION_LEN);
+		source = source.substring(source.lastIndexOf("/") + 1).replaceAll("%20", " ");
+		currentlyPlaying.setText("Now Playing: " + source);
+		nameL.setText("NAME: " + currentSong.getName());
+		artistL.setText("ARTIST: " + currentSong.getArtist());
+		albumL.setText("ABLUM: " + currentSong.getAlbum());				
 		}
 	
+
 	EventHandler<ActionEvent> buttonHandler = new EventHandler<ActionEvent>() {
 
 		@Override
@@ -305,7 +456,7 @@ private TableView<Song> table = new TableView<Song>();
 
 		}//end event
 	};
-	
+
 	public static void infoBox(String infoMessage, String titleBar)
 	{
 		/* By specifying a null headerMessage String, we cause the dialog to
@@ -322,5 +473,5 @@ private TableView<Song> table = new TableView<Song>();
 		alert.setContentText(infoMessage);
 		alert.showAndWait();
 	}
-	
+
 }

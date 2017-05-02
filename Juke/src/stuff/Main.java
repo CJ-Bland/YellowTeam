@@ -1,4 +1,5 @@
 package stuff;
+import controllers.Jukebox;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -13,7 +14,7 @@ import view.Screen1_View;
  * @author CJ
  *@version Sprint 3
  */
-public class CJ_TestDriver extends Application implements ChangeHandler{
+public class Main extends Application implements ChangeHandler{
 
 	/**The current stage for the application**/
 	Stage stage;
@@ -26,6 +27,8 @@ public class CJ_TestDriver extends Application implements ChangeHandler{
 	
 	private static Screen1_View screenView;
 	
+	public static Jukebox jukebox;
+	
 	//========================================================================
 		/**Start our application
 		 * @param primaryStage The main application window**/
@@ -35,12 +38,13 @@ public class CJ_TestDriver extends Application implements ChangeHandler{
 			try {
 				this.stage = primaryStage;
 				
+				
 				//Make the program full screen.	
 				//primaryStage.setFullScreen(true);
 							
 				//The scene for the first screen.
 				Scene scene = new Scene(new Pane(),800,600);
-				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+				scene.getStylesheets().add(getClass().getResource("/application.css").toExternalForm());
 				this.rootScene = scene;
 				
 				//show the home screen
