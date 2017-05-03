@@ -23,11 +23,7 @@ public class Song {
 	 * The album of the song
 	 */
 	private String album;
-	/**
-	 * The year of the song
-	 * As of sprint 3, decided to be unnecessary
-	 */
-	//private String year;
+	
 	/**
 	 * The number of times the song is played
 	 */
@@ -43,8 +39,7 @@ public class Song {
 	/**
 	 * The artwork of the song
 	 */
-	//CJ: May change, can just use the artwork for the album
-	// if it exists
+	
 	private ImageView artwork;
 
 	/**
@@ -58,12 +53,11 @@ public class Song {
 	 * @param fileName
 	 * @param artwork
 	 */
-	public Song(String name, String artist, String album, /*String year,*/ 
+	public Song(String name, String artist, String album,
 			String location, String fileName, ImageView artwork) {
 		this.name = name;
 		this.artist = artist;
 		this.album = album;
-		//this.year = year;
 		this.plays = 0;
 		this.location = location;
 		this.fileName = fileName;
@@ -71,24 +65,6 @@ public class Song {
 	}
 
 	
-	/**
-	 * @return	the year of the song
-	 */
-	/*
-	public String getYear() {
-		return year;
-	}
-	*/
-
-	/**
-	 * @param year
-	 */
-	/*
-	public void setYear(String year) {
-		this.year = year;
-	}
-	*/
-
 	/**
 	 * @return	the artwork of the song
 	 */
@@ -160,6 +136,12 @@ public class Song {
 	}
 
 	/**
+	 * Method to increment the plays by one when played by the media player
+	 */
+	public void incPlays(){
+		plays++;
+	}
+	/**
 	 * @return	the location of the file
 	 */
 	public String getLocation() {
@@ -191,7 +173,6 @@ public class Song {
 		return "Song{" + "name=" + name + 
 				", artist=" + artist + 
 				", album=" + album + 
-//				", year=" + year + 
 				", plays=" + plays + 
 				", location=" + location + 
 				", file name=" + fileName + 
@@ -216,8 +197,6 @@ public class Song {
 		if(!artist.equals(song.artist)) return false;
 
 		if(!album.equals(song.album)) return false;
-
-//		if(!year.equals(song.year)) return false;
 
 		if(plays != song.plays) return false;
 

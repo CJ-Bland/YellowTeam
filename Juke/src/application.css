@@ -38,8 +38,8 @@
 }
 
 .root{
-   /* -fx-background-color: #262626;*/
-   -fx-background-color: #bd00ff;
+    -fx-background-color: #262626;
+   /*-fx-background-color: #bd00ff;*/
 }
 
 .table-view{
@@ -84,7 +84,8 @@
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #005797;
+    /*-fx-background-color: #005797;*/
+    -fx-background-color: linear-gradient(#DB00DB, #730073);
     -fx-background-insets: 0;
     -fx-background-radius: 1;
 }

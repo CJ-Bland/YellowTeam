@@ -43,6 +43,18 @@ public class Jukebox {
 	 * True if the user is an admin, otherwise false
 	 */
 	private boolean isAdmin;
+	/**
+	 * The password to access admin functionalities
+	 */
+	private String password;
+	/**
+	 * A message the admin can display or not
+	 */
+	private String message;
+	/**
+	 * Boolean to siplay the message or not
+	 */
+	private boolean displayMessage;
 
 	/**
 	 * Constructor of the Jukebox class
@@ -55,22 +67,31 @@ public class Jukebox {
 		this.credits = 0;
 		this.totalFunds = 0;
 		this.displayVName = true;
+		this.displayMessage = false;
 		this.isAdmin = false;
 		this.oneCreditPrice = 1;
 		this.fiveCreditsPrice = 3;
 		this.venueName = "La belle avenue";
+		this.password = "1234";
+		this.message = "";
 	}
 	
+	/**
+	 * Constructor of the Jukebox class without parameters
+	 */
 	public Jukebox(){
 		this.songList = new SongList();
 		this.songQueue = new SongQueue();
 		this.credits = 0;
 		this.totalFunds = 0;
 		this.displayVName = true;
+		this.displayMessage = false;
 		this.isAdmin = false;
 		this.oneCreditPrice = 1;
 		this.fiveCreditsPrice = 3;
 		this.venueName = "La belle avenue";
+		this.password = "1234";
+		this.message = "Enjoy the tunes";
 	}
 
 	/**
@@ -169,13 +190,6 @@ public class Jukebox {
 	public void setVenueName(String venueName) {
 		this.venueName = venueName;
 	}
-	
-	/**
-	 * @param displayVName
-	 */
-	public void getdisplayVenueName(boolean displayVName) {
-		this.displayVName = displayVName;
-	}
 
 	/**
 	 * @return	true if the user is an admin
@@ -189,6 +203,69 @@ public class Jukebox {
 	 */
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+	
+	/**
+	 * @return	the admin password
+	 */
+	public String getPassword() {
+		return password;
+	}
+	
+	/**
+	 * @param password
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	/**
+	 * @return	the message
+	 */
+	public String getMessage() {
+		return message;
+	}
+	
+	/**
+	 * @param message
+	 */
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	/**
+	 * @return	displayVName
+	 */
+	public boolean isDisplayVName() {
+		return displayVName;
+	}
+
+	/**
+	 * @param displayVName
+	 */
+	public void setDisplayVName(boolean displayVName) {
+		this.displayVName = displayVName;
+	}
+
+	/**
+	 * @return	displayMessage
+	 */
+	public boolean isDisplayMessage() {
+		return displayMessage;
+	}
+
+	/**
+	 * @param displayMessage
+	 */
+	public void setDisplayMessage(boolean displayMessage) {
+		this.displayMessage = displayMessage;
+	}
+	
+	/**
+	 * Method used to decrement the credits when a song is added
+	 */
+	public void decrementCredits() {
+		credits--;
 	}
 
 }

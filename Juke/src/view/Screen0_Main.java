@@ -15,7 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
- * A tester scene based on class example 
+ * The "splash" screen which is the jukemeisters main display screen
+ * Switches to admin log in through keyboard commands, and to the user view through clicking
  * 
  * @author CJ
  *
@@ -43,11 +44,12 @@ public class Screen0_Main extends VBox{
 		tp.setMaxSize(200, 200);
 		tp.setMinSize(100, 100);
 		tp.setPrefSize(120, 120);
-/*
-		test = new Button("Test");
+
+		test = new Button("");
+		test.setStyle("-fx-background-color: #262626;");
 		test.setOnAction(buttonHandler);
 		tp.getChildren().add(test);
-		VBox.setMargin(test, new Insets(10, 10, 10, 10));*/
+		VBox.setMargin(test, new Insets(10, 10, 10, 10));
 		
 		String image = "/splash.png";
 		this.setStyle("-fx-background-image: url('" + image + "'); " +
@@ -57,8 +59,8 @@ public class Screen0_Main extends VBox{
 		
 		this.getChildren().add(tp);
 		
-		//Listen for keypress.
-        this.setOnKeyReleased(new EventHandler<KeyEvent>() {
+		//Listen for keypress
+        this.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
@@ -66,6 +68,7 @@ public class Screen0_Main extends VBox{
                     	System.out.println("delete pressed");                	
                     	break;
                     case ENTER:   
+                    	screenChanger.changeScreen(ChangeHandler.Screen.SCREEN2);
                     	System.out.println("enter pressed");
                     	break;
                 }
@@ -94,4 +97,5 @@ public class Screen0_Main extends VBox{
 
 		}
 	};
+
 }

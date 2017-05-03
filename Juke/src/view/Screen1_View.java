@@ -22,7 +22,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import controllers.Jukebox;
+import controllers.PlaySong;
+import driver.Main;
 import entity.Song;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -53,42 +59,49 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 /**
- * A tester screen based on class example
+ * The main user screen, displays the song list, has search capabilities, also shows current song
+ * and credit balance
  * 
  * @author CJ
- *
  */
 public class Screen1_View extends BorderPane{
 
+	Jukebox jukebox = Main.jukebox;
 	ChangeHandler screenChanger;
 	Button home;
-	final ProgressBar progress = new ProgressBar();
-	private ChangeListener<Duration> progressChangeListener;
+	Button b1;
+	Button b2;
+	final static ProgressBar progress = new ProgressBar();
+	private static ChangeListener<Duration> progressChangeListener;
 	public static final int FILE_EXTENSION_LEN = 3;
 
-	final Label currentlyPlaying = new Label();
+	final static Label currentlyPlaying = new Label();
 
 	final HBox searchHB = new HBox();
 	final HBox homeHB = new HBox();
 	final AnchorPane topPane = new AnchorPane();
 
-	static MediaPlayer mediaPlayer = null;
-	private Queue<Media> queue = new LinkedList<Media>();
+	static PlaySong mediaPlayer = new PlaySong();
+	public static Queue<Song> queue = new LinkedList<Song>();
 
-	public Song currentSong;
-	public ImageView currentImage = new ImageView();
+	public static Song currentSong;
+	public static ImageView currentImage = new ImageView();
 
 	Pane pane = new Pane();
-	Label nameL = new Label();
-	Label artistL = new Label();
-	Label albumL = new Label();
+	static Label nameL = new Label();
+	static Label artistL = new Label();
+	static Label albumL = new Label();
+	Label credits = new Label("Current credits: 0");
+	Label error = new Label();
 
+	public static boolean clicked = false;
+	
 	private TableView<Song> table = new TableView<Song>();
 
-	private ObservableList<Song> data =
+	public ObservableList<Song> data =
 			FXCollections.observableArrayList();
 
-	private final ObservableList<Song> fullData = FXCollections.observableArrayList(
+	public static ObservableList<Song> fullData = FXCollections.observableArrayList(
 			new Song("Daybreak", "Unknown", "Unknown", "","file:/C:/Daybreak.mp3", new ImageView(new Image("/img.jpg"))),
 			new Song("Yakaty Sax", "Boots Randolph", "Yakaty Sax", "","file:/C:/Benny-hill-theme.mp3", null),
 			new Song("Jam Funk Rhythm", "Unknown", "Unknown","","file:/C:/JamFunkRhythm-DRAFT.wav", new ImageView(new Image("/img1.jpg"))),
@@ -113,28 +126,6 @@ public class Screen1_View extends BorderPane{
 		this.addRightPanel();
 		this.setOnRowClick();
 	}
-	public void createList(){
-		final List<MediaPlayer> players = new ArrayList<>();
-		for (Song file : data) {
-			players.add(createPlayer(file.getFileName()));
-		}
-		if (players.isEmpty()) {
-			System.out.println("File names not valid");
-			Platform.exit();
-			return;
-		}    
-	}
-
-	private MediaPlayer createPlayer(String mediaSource) {
-		final Media media = new Media(mediaSource);
-		final MediaPlayer player = new MediaPlayer(media);
-		player.setOnError(new Runnable() {
-			@Override public void run() {
-				System.out.println("Media error occurred: " + player.getError());
-			}
-		});
-		return player;
-	}
 
 	public void setOnRowClick(){
 		table.setRowFactory( tv -> {
@@ -144,30 +135,31 @@ public class Screen1_View extends BorderPane{
 					Song rowData = row.getItem();
 					System.out.println(rowData.getName().toString());
 
-					//WILL IMPLEMENT WITH PLAYSONG AND SONGQUEUE WHEN INTERFACE IS MADE
-					//Right now just plays when the song is clicked, not added to a queue
+					if(Main.jukebox.getCredits() > 0){						
+						queue.add(rowData);
+						
+						//spends a credit to play the song
+						Main.jukebox.decrementCredits();
+						credits.setText("Current credits: " + Main.jukebox.getCredits());
+						error.setText("");
 
-					//bip gets file name from file column		
-					String bip = rowData.getFileName().toString();
-					Media hit = new Media(bip);
-					queue.add(hit);
-					
-					//update current song for now playing display
-					currentSong = rowData;
-					currentImage.setImage(currentSong.getArtwork().getImage());									
-
-					if(mediaPlayer == null){						
-						//mediaPlayer = new MediaPlayer(hit);
-						mediaPlayer = new MediaPlayer(queue.poll());
-						mediaPlayer.play();
-						setCurrentlyPlaying(mediaPlayer);
+						//update current song for now playing display
+						currentSong = rowData;
+						fullData.get(fullData.indexOf(currentSong)).incPlays();
+						table.setItems(data);						
+						
+						if(clicked == false){						
+							String bip = queue.poll().getFileName().toString();
+							Media hit = new Media(bip);
+							mediaPlayer.setMediaPlayer(hit);			
+							clicked = true;
+							currentImage.setImage(currentSong.getArtwork().getImage());	
+							setCurrentlyPlaying(mediaPlayer.getMediaPlayer());
+						}
 					}
-					else{						
-						mediaPlayer.stop();
-						mediaPlayer = new MediaPlayer(hit);
-						mediaPlayer.play();
-						setCurrentlyPlaying(mediaPlayer);
-					}					
+					else{
+						error.setText("Error: cannot add song \ndue to insufficient credits");
+					}
 				}
 			});
 			return row ;
@@ -177,13 +169,12 @@ public class Screen1_View extends BorderPane{
 
 	public void addTopPanel(){	
 		topPane.setId("Top");
-		
+
 		home = new Button("Home");	
 		home.setOnAction(buttonHandler);	 				
 		homeHB.getChildren().add(home);	
 
 		final TextField searchTerm = new TextField();
-		//searchTerm.setMaxWidth(.getPrefWidth());
 		searchTerm.setPromptText("Search Term");
 
 		final Button search = new Button("Search");
@@ -193,6 +184,7 @@ public class Screen1_View extends BorderPane{
 				//a sub list which holds all songs that meet search criteria
 				final ObservableList<Song> searchData =
 						FXCollections.observableArrayList();
+						
 				//creates the dialog box
 				Alert alert = new Alert(AlertType.CONFIRMATION);
 				alert.setHeaderText(null);
@@ -221,7 +213,6 @@ public class Screen1_View extends BorderPane{
 
 						if(data.get(i).getName().toLowerCase().contains(searchTerm.getText().toLowerCase()) )
 						{
-							//System.out.println(searchTerm.getText());
 							found = true;
 							searchData.add(data.get(i));				
 						}
@@ -229,7 +220,6 @@ public class Screen1_View extends BorderPane{
 					}while(data.size()>i);
 
 					if(!found){
-						//System.out.println("No Matches Found");
 						infoBox("No Matches Found", "Error");
 					}
 					else if(found){
@@ -243,14 +233,12 @@ public class Screen1_View extends BorderPane{
 					do{
 						if(data.get(i).getArtist().toLowerCase().contains(searchTerm.getText().toLowerCase()) )
 						{
-							//System.out.println(searchTerm.getText());
 							found = true;
 							searchData.add(data.get(i));
 						}
 						i++;
 					}while(data.size()>i);
 					if(!found){
-						//System.out.println("No Matches Found");
 						infoBox("No Matches Found", "Error");
 					}
 					else if(found){
@@ -264,14 +252,12 @@ public class Screen1_View extends BorderPane{
 					do{
 						if(data.get(i).getAlbum().toLowerCase().contains(searchTerm.getText().toLowerCase()) )
 						{
-							//System.out.println(searchTerm.getText());
 							found = true;
 							searchData.add(data.get(i));
 						}
 						i++;
 					}while(data.size()>i);
 					if(!found){
-						//System.out.println("No Matches Found");
 						infoBox("No Matches Found", "Error");
 					}
 					else if(found){
@@ -350,6 +336,13 @@ public class Screen1_View extends BorderPane{
 		fileCol.setMaxWidth(500);
 		fileCol.setCellValueFactory(
 				new PropertyValueFactory<Song, String>("fileName"));
+		
+		TableColumn<Song, String> playsCol = new TableColumn<Song, String>("Plays");
+		playsCol.setMinWidth(50);
+		playsCol.setPrefWidth(100);
+		playsCol.setMaxWidth(200);
+		playsCol.setCellValueFactory(
+				new PropertyValueFactory<Song, String>("plays"));
 
 		//Populates the table
 		data=fullData;
@@ -364,26 +357,24 @@ public class Screen1_View extends BorderPane{
 			data.get(i).getArtwork().setPreserveRatio(true);			
 		}
 		table.setItems(data);
-		table.getColumns().addAll(imgCol, nameCol, artistCol, albumCol, fileCol);
-		//table.setMaxSize(500, 500);
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);		
+		table.getColumns().addAll(imgCol, nameCol, artistCol, albumCol, fileCol, playsCol);
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		fileCol.setVisible(false);
 		this.setCenter((table));
 
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);		
-		
+
 	}
 
 	public void addBottomPanel(){	 
-		
+
 		final VBox bottomVB = new VBox();
-		//bottomVB.setStyle("-fx-font-size: 15; -fx-padding: 20; -fx-alignment: center; -fx-background-color: linear-gradient(#CCCCFF, #8888FF);");
 		bottomVB.setId("hbox");
-		
+
 		final Label label = new Label("NOW PLAYING");
 		label.setFont(new Font("Arial", 25));
 		label.setTextFill(Color.web("#f9f9f9"));
-		//label.getStyleClass().add("outline");		
-
+		
 		final HBox songInfo = new HBox(20);		 		
 
 		final VBox content = new VBox(10);
@@ -407,25 +398,62 @@ public class Screen1_View extends BorderPane{
 		VBox.setMargin(label, new Insets(5, 10, 20, 10));
 		this.setBottom(bottomVB);
 		progress.setMaxWidth(Double.MAX_VALUE);
-		//HBox.setHgrow(progress, Priority.ALWAYS);
-	}
+		}
 
 	public void addLeftPanel(){
+		VBox left = new VBox();
+		left.setAlignment(Pos.CENTER);
 
+		Label venue = new Label();
+		venue.setFont(new Font("Arial", 25));
+		venue.setTextFill(Color.web("#f9f9f9"));
+		venue.setText(Main.jukebox.getVenueName());
+
+		Label message = new Label();
+		message.setFont(new Font("Arial", 15));
+		message.setTextFill(Color.web("#f9f9f9"));
+		message.setText(Main.jukebox.getMessage());
+
+		left.getChildren().addAll(venue, message);
+		this.setLeft(left);
 	}
 
 	public void addRightPanel(){
+		VBox right = new VBox();
+		VBox.setMargin(right, new Insets(10, 10, 10, 10));
+		right.setAlignment(Pos.CENTER);
 
+		Label coins = new Label("INSERT MONEY");
+		coins.setFont(new Font("Arial", 25));
+		coins.setTextFill(Color.web("#f9f9f9"));
+
+		HBox buttons = new HBox(5);
+		b1 = new Button("1 credit");
+		b1.setOnAction(buttonHandler);
+		b2 = new Button("5 credit");
+		b2.setOnAction(buttonHandler);		
+		buttons.getChildren().addAll(b1, b2);
+		buttons.setAlignment(Pos.CENTER);
+		HBox.setMargin(buttons, new Insets(10, 10, 10, 10));
+		
+		error.setTextFill(Color.web("#f9f9f9"));
+
+
+		credits.setFont(new Font("Arial", 25));
+		credits.setTextFill(Color.web("#f9f9f9"));
+		right.setAlignment(Pos.CENTER);
+		right.getChildren().addAll(coins, buttons, credits, error);
+		this.setRight(right);
 	}
 	/** sets the currently playing label to the label of the new media player and updates the progress monitor. */
-	private void setCurrentlyPlaying(final MediaPlayer newPlayer) {
+	public static void setCurrentlyPlaying(final MediaPlayer newPlayer) {
 		newPlayer.seek(Duration.ZERO);
 
 		progress.setProgress(0);
 		progressChangeListener = new ChangeListener<Duration>() {
 			@Override public void changed(ObservableValue<? extends Duration> observableValue, Duration oldValue, Duration newValue) {
 				progress.setProgress(1.0 * newPlayer.getCurrentTime().toMillis() / newPlayer.getTotalDuration().toMillis());
-				progress.setStyle("-fx-accent: yellow;");
+				progress.setStyle("-fx-accent: #262626;");
 			}
 		};
 		newPlayer.currentTimeProperty().addListener(progressChangeListener);
@@ -436,9 +464,9 @@ public class Screen1_View extends BorderPane{
 		currentlyPlaying.setText("Now Playing: " + source);
 		nameL.setText("NAME: " + currentSong.getName());
 		artistL.setText("ARTIST: " + currentSong.getArtist());
-		albumL.setText("ABLUM: " + currentSong.getAlbum());				
-		}
-	
+		albumL.setText("ALBUM: " + currentSong.getAlbum());				
+	}
+
 
 	EventHandler<ActionEvent> buttonHandler = new EventHandler<ActionEvent>() {
 
@@ -451,6 +479,16 @@ public class Screen1_View extends BorderPane{
 				if(screenChanger != null){
 					screenChanger.home();
 				}
+			}
+			else if(o == b1){
+				System.out.println("$1 added");
+				Main.jukebox.insertCoin(Main.jukebox.getOneCreditPrice());
+				credits.setText("Current credits: " + Main.jukebox.getCredits());
+			}
+			else if(o == b2){
+				System.out.println("$3 added");
+				Main.jukebox.insertCoin(Main.jukebox.getFiveCreditsPrice());
+				credits.setText("Current credits: " + Main.jukebox.getCredits());				
 			}
 
 
